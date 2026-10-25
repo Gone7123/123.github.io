@@ -1,12 +1,289 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Gone</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gone · 个人主页</title>
+<meta name="description" content="Gone —— 来自 GBU 的 fresher。欢迎来访，请多多指教。" />
+<meta name="theme-color" content="#0a0c14" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='26' fill='%237c6cff'/><text x='50' y='54' font-family='system-ui,sans-serif' font-size='58' font-weight='700' fill='%23ffffff' text-anchor='middle' dominant-baseline='middle'>G</text></svg>" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0c14;
+    --fg: #eef1f8;
+    --muted: #9aa3b8;
+    --line: rgba(255, 255, 255, .10);
+    --card: rgba(255, 255, 255, .04);
+    --accent: #7c6cff;
+    --accent-2: #3dd6c4;
+    --pink: #ff6ec7;
+    --shadow: 0 40px 90px -50px rgba(0, 0, 0, .95);
+    --blob-opacity: .5;
+    --grid-line: rgba(255, 255, 255, .05);
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f6f7fc;
+      --fg: #14161f;
+      --muted: #5b6478;
+      --line: rgba(16, 18, 28, .12);
+      --card: rgba(255, 255, 255, .72);
+      --accent: #5b4bdb;
+      --accent-2: #0e9e8f;
+      --pink: #e0509f;
+      --shadow: 0 40px 90px -60px rgba(30, 40, 80, .35);
+      --blob-opacity: .26;
+      --grid-line: rgba(16, 18, 28, .05);
+    }
+  }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(22px, 6vw, 64px) 20px;
+    overflow-x: hidden;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- decoration: floating blobs + faint grid ---------- */
+  .bg {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(72px);
+    opacity: var(--blob-opacity);
+    animation: float 18s ease-in-out infinite;
+  }
+
+  .blob-1 { width: 520px; height: 520px; top: -160px; left: -130px; background: var(--accent); animation-delay: -2s; }
+  .blob-2 { width: 460px; height: 460px; bottom: -170px; right: -130px; background: var(--accent-2); animation-delay: -8s; }
+  .blob-3 { width: 360px; height: 360px; top: 38%; left: 58%; background: var(--pink); opacity: .22; animation-delay: -14s; }
+
+  .grid {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 52px 52px;
+    -webkit-mask-image: radial-gradient(circle at 50% 42%, #000 0%, transparent 72%);
+    mask-image: radial-gradient(circle at 50% 42%, #000 0%, transparent 72%);
+  }
+
+  /* ---------- card ---------- */
+  .card {
+    position: relative;
+    width: min(680px, 100%);
+    padding: clamp(28px, 5.2vw, 56px);
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    background: var(--card);
+    box-shadow: var(--shadow);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    backdrop-filter: blur(14px) saturate(120%);
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: .55em;
+    margin: 0 0 1.15em;
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-2);
+    box-shadow: 0 0 0 4px rgba(61, 214, 196, .16);
+  }
+
+  h1 {
+    margin: 0 0 .18em;
+    font-size: clamp(2.8rem, 9vw, 4.2rem);
+    line-height: 1.04;
+    letter-spacing: -.025em;
+    background: linear-gradient(100deg, var(--fg) 6%, var(--accent) 58%, var(--accent-2) 96%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .subtitle {
+    margin: 0 0 1.7rem;
+    font-size: clamp(.95rem, 2.4vw, 1.05rem);
+    letter-spacing: .02em;
+    color: var(--muted);
+  }
+
+  .rule {
+    height: 1px;
+    margin: 0 0 1.9rem;
+    border: 0;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2) 55%, transparent);
+    opacity: .55;
+  }
+
+  .lead {
+    margin: 0 0 .95em;
+    font-size: clamp(1.08rem, 2.8vw, 1.25rem);
+    font-weight: 600;
+    line-height: 1.7;
+    color: var(--fg);
+  }
+
+  p {
+    margin: 0 0 1.05em;
+    font-size: clamp(.95rem, 2.3vw, 1rem);
+    line-height: 1.85;
+    color: var(--muted);
+  }
+
+  /* ---------- chips ---------- */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+    margin: 1.9rem 0 2.3rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .chips li {
+    padding: .5rem .95rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: .86rem;
+    color: var(--muted);
+    transition: border-color .25s ease, color .25s ease, transform .25s ease;
+  }
+
+  .chips li:hover {
+    border-color: var(--accent);
+    color: var(--fg);
+    transform: translateY(-2px);
+  }
+
+  /* ---------- footer ---------- */
+  footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .5rem 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .thanks {
+    margin: 0;
+    font-size: .88rem;
+    color: var(--muted);
+  }
+
+  .meta {
+    margin: 0;
+    font-size: .74rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    opacity: .65;
+  }
+
+  /* ---------- motion ---------- */
+  @keyframes float {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+    50%      { transform: translate3d(26px, -30px, 0) scale(1.08); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .card > * { animation: fadeUp .8s cubic-bezier(.2, .7, .2, 1) both; }
+  .card > *:nth-child(1) { animation-delay: .04s; }
+  .card > *:nth-child(2) { animation-delay: .12s; }
+  .card > *:nth-child(3) { animation-delay: .20s; }
+  .card > *:nth-child(4) { animation-delay: .28s; }
+  .card > *:nth-child(5) { animation-delay: .34s; }
+  .card > *:nth-child(6) { animation-delay: .40s; }
+  .card > *:nth-child(7) { animation-delay: .46s; }
+  .card > *:nth-child(8) { animation-delay: .52s; }
+  .card > *:nth-child(9) { animation-delay: .58s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>
 </head>
 <body>
-  <h1>Hi, I'm Gone</h1>
-  <p>这是我的个人主页。</p>
+  <div class="bg" aria-hidden="true">
+    <span class="blob blob-1"></span>
+    <span class="blob blob-2"></span>
+    <span class="blob blob-3"></span>
+  </div>
+  <div class="grid" aria-hidden="true"></div>
+
+  <main class="card">
+    <p class="eyebrow"><span class="dot"></span>GBU · Fresher</p>
+
+    <h1>Gone</h1>
+    <p class="subtitle">来自 GBU 的大一新生 · 很高兴认识你</p>
+
+    <hr class="rule" />
+
+    <p class="lead">我是一个来自 GBU 的 fresher，请多多指教。</p>
+
+    <p>
+      这是我亲手搭起来的第一个小站：一张简单的名片，也是我刚刚开始的编程旅程里，第一行还算像样的注脚。
+      从什么都不懂，到它能在一个网址上被打开，中间隔了不少次报错和重来。所以不管你是无意间点进来，
+      还是专门来看一眼，我都挺高兴的。
+    </p>
+
+    <p>
+      我还是个新手，很多东西正在学，也还有很多东西不知道。如果有机会交流，希望能听到你的一句建议；
+      如果只是路过，也谢谢你愿意在这里停一会儿。愿你我都能慢慢变成想成为的样子。
+    </p>
+
+    <ul class="chips">
+      <li>🌱 正在学习</li>
+      <li>💬 乐于请教</li>
+      <li>✉️ 欢迎交流</li>
+    </ul>
+
+    <footer>
+      <p class="thanks">谢谢你的来访 · Thanks for stopping by.</p>
+      <p class="meta">Gone · 2026</p>
+    </footer>
+  </main>
 </body>
 </html>
